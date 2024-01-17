@@ -1,11 +1,12 @@
 {
   "name": "rainsrc",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "bin": "index.js",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
