@@ -122,6 +122,7 @@ async function updatingPackageJson(
     devDependencies: {
       "typescript": "^5.3.3",
       "prettier": "^3.2.3",
+      "@types/node": "^20.11.5",
     },
   };
   const newContent = JSON.stringify(newParsed);
