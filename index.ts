@@ -14,7 +14,12 @@ const exec = promisify(childProcess.exec);
 
 (async () => {
   const response = await prompts([
-    { type: "text", name: "projectName", message: "Name of the project:", initial: "rainsrc" },
+    {
+      type: "text",
+      name: "projectName",
+      message: "Name of the project:",
+      initial: "rainsrc",
+    },
     {
       type: "select",
       name: "packageManager",
@@ -25,7 +30,12 @@ const exec = promisify(childProcess.exec);
         { title: "pnpm", value: "pnpm" },
       ],
     },
-    { type: "text", name: "mainFileName", message: "Name of the main file:", initial: "main" },
+    {
+      type: "text",
+      name: "mainFileName",
+      message: "Name of the main file:",
+      initial: "main",
+    },
   ]);
   const { projectName, packageManager, mainFileName } = response;
 
@@ -37,8 +47,8 @@ const exec = promisify(childProcess.exec);
   const tsConfigContent = stripIndent`
     {
       "compilerOptions": {
-        "target": "es5",
-        "module": "es6",
+        "target": "ES2017",
+        "module": "ESNext",
         "declaration": true,
         "outDir": "./dist",
         "moduleResolution": "node",
@@ -47,6 +57,17 @@ const exec = promisify(childProcess.exec);
       },
       "include": ["src/**/*"]
     }
+  `;
+  const envContent = stripIndent`
+    import dotenv from "dotenv";
+    import { cleanEnv } from "envalid";
+
+    dotenv.config();
+
+    const env = cleanEnv(process.env, {
+    });
+
+    export default env;
   `;
   console.log("Terminal Running");
 
@@ -68,13 +89,20 @@ const exec = promisify(childProcess.exec);
     writeFile(join(workingDirectory, ".gitignore"), gitignoreContent),
     writeFile(join(workingDirectory, "tsconfig.json"), tsConfigContent),
     writeFile(join(workingDirectory, ".env"), ""),
-    mkdir(join(workingDirectory, "src")).then(() => writeFile(join(workingDirectory, "src", `${mainFileName}.ts`), "")),
+
+    mkdir(join(workingDirectory, "src")).then(() => {
+      writeFile(join(workingDirectory, "src", `${mainFileName}.ts`), "");
+      writeFile(join(workingDirectory, "src", "env.ts"), envContent);
+    }),
   ]);
   await updatingPackageJson(workingDirectory, mainFileName);
   console.log("Rainsrc generated successfully");
 })().catch(console.log);
 
-async function updatingPackageJson(workingDirectory: string, mainFileName: string) {
+async function updatingPackageJson(
+  workingDirectory: string,
+  mainFileName: string,
+) {
   const path = join(workingDirectory, "package.json");
   const content = await readFile(path);
   const parsed = JSON.parse(content.toString());
@@ -83,9 +111,17 @@ async function updatingPackageJson(workingDirectory: string, mainFileName: strin
     type: "module",
     main: "dist/index.js",
     scripts: {
-      dev: `node --loader ts-node/esm ./src/${mainFileName}.ts`,
+      dev: `yarn build && yarn start`,
       start: `node ./dist/${mainFileName}.js`,
       build: "tsc",
+    },
+    dependencies: {
+      "dotenv": "^16.3.1",
+      "envalid": "^8.0.0",
+    },
+    devDependencies: {
+      "typescript": "^5.3.3",
+      "prettier": "^3.2.3",
     },
   };
   const newContent = JSON.stringify(newParsed);
