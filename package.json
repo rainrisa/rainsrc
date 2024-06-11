@@ -1,6 +1,6 @@
 {
   "name": "rainsrc",
-  "version": "2.1.1",
+  "version": "2.2.1",
   "bin": "index.js",
   "type": "module",
   "main": "index.js",
