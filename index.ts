@@ -6,6 +6,7 @@ import { promisify } from "node:util";
 import childProcess from "node:child_process";
 import prompts from "prompts";
 import { stripIndent } from "common-tags";
+import prettier from "prettier";
 
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
@@ -96,6 +97,7 @@ const exec = promisify(childProcess.exec);
     }),
   ]);
   await updatingPackageJson(workingDirectory, mainFileName);
+
   console.log("Rainsrc generated successfully");
 })().catch(console.log);
 
@@ -126,5 +128,8 @@ async function updatingPackageJson(
     },
   };
   const newContent = JSON.stringify(newParsed);
-  await writeFile(path, newContent);
+  const formattedContent = await prettier.format(newContent, {
+    parser: "json-stringify",
+  });
+  await writeFile(path, formattedContent);
 }
