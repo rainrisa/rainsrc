@@ -120,7 +120,8 @@ async function updatingPackageJson(
     scripts: {
       dev: `${command} build && ${command} start`,
       start: `node ./dist/${mainFileName}.js`,
-      build: "tsc",
+      build: `${command} format && tsc`,
+      format: `prettier -w .`,
     },
     dependencies: {
       dotenv: "^16.4.1",
