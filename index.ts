@@ -118,13 +118,13 @@ async function updatingPackageJson(
       build: "tsc",
     },
     dependencies: {
-      "dotenv": "^16.3.1",
+      "dotenv": "^16.4.1",
       "envalid": "^8.0.0",
     },
     devDependencies: {
-      "typescript": "^5.3.3",
-      "prettier": "^3.2.3",
-      "@types/node": "^20.11.5",
+      "typescript": "^5.8.2",
+      "prettier": "^3.5.3",
+      "@types/node": "^22.13.13",
     },
   };
   const newContent = JSON.stringify(newParsed);
