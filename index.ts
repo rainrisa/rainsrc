@@ -74,13 +74,17 @@ const exec = promisify(childProcess.exec);
 
   const workingDirectory = join(process.cwd(), projectName);
   await mkdir(workingDirectory);
+  let command = "";
 
   if (packageManager === "npm") {
     await exec("npm init -y", { cwd: workingDirectory });
+    command = "npm run";
   } else if (packageManager === "yarn") {
     await exec("yarn init -y", { cwd: workingDirectory });
+    command = "yarn";
   } else if (packageManager === "pnpm") {
     await exec("pnpm init", { cwd: workingDirectory });
+    command = "pnpm run";
   } else {
     return process.exit();
   }
@@ -96,7 +100,7 @@ const exec = promisify(childProcess.exec);
       writeFile(join(workingDirectory, "src", "env.ts"), envContent);
     }),
   ]);
-  await updatingPackageJson(workingDirectory, mainFileName);
+  await updatingPackageJson(workingDirectory, mainFileName, command);
 
   console.log("Rainsrc generated successfully");
 })().catch(console.log);
@@ -104,6 +108,7 @@ const exec = promisify(childProcess.exec);
 async function updatingPackageJson(
   workingDirectory: string,
   mainFileName: string,
+  command: string,
 ) {
   const path = join(workingDirectory, "package.json");
   const content = await readFile(path);
@@ -113,7 +118,7 @@ async function updatingPackageJson(
     type: "module",
     main: "dist/index.js",
     scripts: {
-      dev: `yarn build && yarn start`,
+      dev: `${command} build && ${command} start`,
       start: `node ./dist/${mainFileName}.js`,
       build: "tsc",
     },
