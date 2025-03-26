@@ -123,12 +123,12 @@ async function updatingPackageJson(
       build: "tsc",
     },
     dependencies: {
-      "dotenv": "^16.4.1",
-      "envalid": "^8.0.0",
+      dotenv: "^16.4.1",
+      envalid: "^8.0.0",
     },
     devDependencies: {
-      "typescript": "^5.8.2",
-      "prettier": "^3.5.3",
+      typescript: "^5.8.2",
+      prettier: "^3.5.3",
       "@types/node": "^22.13.13",
     },
   };
