@@ -100,16 +100,12 @@ const exec = promisify(childProcess.exec);
       writeFile(join(workingDirectory, "src", "env.ts"), envContent);
     }),
   ]);
-  await updatingPackageJson(workingDirectory, mainFileName, command);
+  await updatingPackageJson(workingDirectory);
 
   console.log("Rainsrc generated successfully");
 })().catch(console.log);
 
-async function updatingPackageJson(
-  workingDirectory: string,
-  mainFileName: string,
-  command: string,
-) {
+async function updatingPackageJson(workingDirectory: string) {
   const path = join(workingDirectory, "package.json");
   const content = await readFile(path);
   const parsed = JSON.parse(content.toString());
@@ -118,14 +114,14 @@ async function updatingPackageJson(
     type: "module",
     main: "dist/index.js",
     scripts: {
-      dev: `${command} build && ${command} start`,
-      start: `node ./dist/${mainFileName}.js`,
-      build: `${command} format && tsc`,
+      dev: `tsx watch ./src/main.ts`,
+      start: `tsx ./src/main.ts`,
       format: `prettier -w .`,
     },
     dependencies: {
       dotenv: "^16.4.1",
       envalid: "^8.0.0",
+      tsx: "^4.19.4",
     },
     devDependencies: {
       typescript: "^5.8.2",
